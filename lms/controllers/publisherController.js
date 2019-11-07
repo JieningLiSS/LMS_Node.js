@@ -1,0 +1,48 @@
+var routes = require('express').Router();
+var db = require('../db/db');
+var publisherDao = require('../dao/publisherDao');
+
+routes.get('/publishers',function(req,res){
+    publisherDao.getAllPublishers(function(error, result){
+      if(error) throw error;
+      res.setHeader('Content-Type', 'application/json');
+      res.send(result);
+    });
+});
+
+routes.post('/publishers', function(req, res){
+  var publisher = req.body;
+  publisherDao.addPublisher(publisher, function(err, result){
+    if(err){
+      res.status(400);
+      res.send('Add Publisher Failed!');
+    }
+    res.status(201);
+    res.send('Add Publisher Successful!');
+  });
+
+});
+
+routes.put('/publishers/:id', function(req, res){
+  var publisher = req.body;
+  publisherDao.updatePublisher(req.params.id, publisher, function(err, result){
+    if(err){
+      res.status(400);
+      res.send('Update Publisher Failed!');
+    }
+    res.send('Update Publisher Successful!');
+  });
+});
+
+
+routes.delete('/publishers/:id', function(req, res){
+    publisherDao.removePublisher(req.params.id, function(err, result){
+    if(err){
+      res.status(400);
+      res.send('Delete Publisher Failed!');
+    }
+    res.send('Delete Publisher Successful!');
+  });
+});
+
+module.exports = routes;
